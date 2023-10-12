@@ -89,6 +89,22 @@ function initEndpoints(app, db) {
       })
   });
 
+  
+  app.delete('/students/:id', async (req, res) => {
+      const id = parseInt(req.params.id);
+      db('students').where({ id }).del().returning('*').then((deletedStudent) => {
+        if (deletedStudent.length > 0) {
+          res.json(deletedStudent[0]);
+        } else {
+          res.status(404).json({ error: 'Student not found' });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while deleting the student.' });
+      });
+  });
+
 }
 
 module.exports = initEndpoints;
