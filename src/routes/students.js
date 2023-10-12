@@ -13,7 +13,28 @@
 
 
 function initEndpoints(app, db) {
-
+/**
+   * POST /students
+   *
+   * This route handles the creation of a new student record in the database.
+   * It expects a JSON object containing student information in the request body.
+   * Upon successful creation, it returns the newly created student's information.
+   *
+   * @param {object} req - The HTTP request object.
+   * @param {Student} req.body - the HTTP request body contains the student
+   * @param {object} res - The HTTP response object.
+   * @returns {object} JSON response with either the newly created student or an error message.
+   */
+  app.post('/students', async (req, res) => {
+      const student = req.body;
+      db('students').insert(student).returning('*').then((insertedStudent) => {
+        res.status(201).json(insertedStudent[0]);
+      })
+      .catch((err) => {
+        res.status(500).json({error: err});
+      })
+    
+  });
   /**
    * GET /students
    *
