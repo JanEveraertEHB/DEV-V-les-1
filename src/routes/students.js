@@ -61,6 +61,34 @@ function initEndpoints(app, db) {
       })
   });
 
+
+  /**
+   * PUT /students/:id
+   *
+   * This route updates a specific student's information in the database based on the provided ID.
+   * It expects the student's ID as a parameter in the URL and the updated student data in the request body as JSON.
+   * If the student is found and successfully updated, it returns the updated student's information as JSON.
+   * If the student is not found, it returns a 404 Not Found error.
+   *
+   * @param {object} req - The HTTP request object containing the student ID as a parameter and the updated student data in the request body.
+   * @param {object} res - The HTTP response object.
+   * @returns {object} JSON response with either the updated student's information, a 404 error if not found, or a 500 error if an error occurs during the update.
+   */
+  app.put('/students/:id', async (req, res) => {
+      const id = parseInt(req.params.id);
+      const updatedStudent = req.body;
+      db('students').where({ id }).update(updatedStudent).returning('*').then((result) => {
+        if (result.length > 0) {
+          res.json(result[0]);
+        } else {
+          res.status(404).json({ error: 'Student not found' });
+        }
+      }).catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while updating the student.' });
+      })
+  });
+
 }
 
 module.exports = initEndpoints;
