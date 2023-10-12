@@ -90,6 +90,18 @@ function initEndpoints(app, db) {
   });
 
   
+  /**
+   * DELETE /students/:id
+   *
+   * This route deletes a specific student from the database based on the provided ID.
+   * It expects the student's ID as a parameter in the URL.
+   * If the student is found and successfully deleted, it returns the deleted student's information as JSON.
+   * If the student is not found, it returns a 404 Not Found error.
+   *
+   * @param {object} req - The HTTP request object containing the student ID as a parameter.
+   * @param {object} res - The HTTP response object.
+   * @returns {object} JSON response with either the deleted student's information, a 404 error if not found, or a 500 error if an error occurs during the deletion.
+   */
   app.delete('/students/:id', async (req, res) => {
       const id = parseInt(req.params.id);
       db('students').where({ id }).del().returning('*').then((deletedStudent) => {
